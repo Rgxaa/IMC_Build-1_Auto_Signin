@@ -129,7 +129,7 @@ async function h() {
         });
         e.on('login', async () => {
             console.log('成功加入服务器!');
-            await s(1000);
+            await s(2000);
             if (!t.h) {
                 console.log('\n3.正在切换到build-1...');
                 e.write('chat', {
@@ -148,9 +148,9 @@ async function h() {
                             console.log('正在断开连接...');
                             e.end();
                             process.exit(0)
-                        }, 1000)
+                        }, 2000)
                     }
-                }, 1000)
+                }, 2000)
             }
         });
         e.on('position', () => {});
