@@ -98,14 +98,14 @@ async function h() {
                     n = f(o);
                 if (n.trim()) {
                     console.log(`${n}`);
-                    if (n.toLowerCase().includes('login')) {
+                    if (n.toLowerCase().includes('/login')) {
                         console.log('检测到login字段...');
                         e.write('chat', {
                             message: `/l ${c.password}`
                         });
                         console.log('已发送登录命令')
                     }
-                    if (t.h && n.includes('你需要绑定才能进入这个服务器，如果你已经绑定，请重连服务器')) {
+                    if (t.h && n.includes('/bind')) {
                         console.log('未绑定，错误退出');
                         e.end();
                         process.exit(1)
