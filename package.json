@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/XiaYi2011/IMC_Build-1_Auto_Signin#readme",
   "dependencies": {
-    "minecraft-protocol": "^1.62.0"
+    "minecraft-protocol": "^1.66.2"
   }
 }
