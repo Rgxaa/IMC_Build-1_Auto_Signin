@@ -281,7 +281,7 @@ async function h() {
                         return;
                     }
                     if (plainText.includes('才能再次领取该奖励')) {
-                        fail('今日已签到，无需重复操作');
+                        fail('签到处于冷却中，签到失败');
                         return;
                     }
                 } catch (e) { /* 忽略聊天解析异常 */ }
