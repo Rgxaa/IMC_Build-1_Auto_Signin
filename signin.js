@@ -69,10 +69,25 @@ function d(e) {
     return String(e);
 }
 
-// 日志辅助函数，统一输出格式
-function info(msg)  { console.log(`[步骤] ${msg}`); }
-function err(msg)   { console.error(`[错误] ${msg}`); }
-function svr(msg)   { console.log(`[服务器] ${msg}`); }
+// 生成北京时间的 [HH:MM:SS] 时间戳
+function getBeijingTime() {
+    const now = new Date();
+    const options = {
+        timeZone: 'Asia/Shanghai',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    };
+    const parts = new Intl.DateTimeFormat('en-CA', options).format(now).split(', ');
+    const time = parts.length > 1 ? parts[1] : parts[0]; // 提取 HH:MM:SS
+    return `[${time}]`;
+}
+
+// 日志辅助函数，统一输出格式，并加入北京时间的 [HH:MM:SS] 前缀
+function info(msg)  { console.log(`${getBeijingTime()} [步骤] ${msg}`); }
+function err(msg)   { console.error(`${getBeijingTime()} [错误] ${msg}`); }
+function svr(msg)   { console.log(`${getBeijingTime()} [服务器] ${msg}`); }
 
 // 判定物品：黄色羊毛（id:35, damage:4）
 function isYellowWool(item) {
@@ -260,7 +275,7 @@ async function h() {
                     }
 
                     // 5. 成功切换子服（Build-1）
-                    if (state === 'wait_switch' && plainText.includes(`+ ${c.username}`)) {
+                    if (state === 'wait_switch' && plainText === `|   + ${c.username}`) {
                         info('🏠 已进入子服 build-1，发送签到命令');
                         state = 'wait_sign';
                         client.write('chat', { message: '/signin' });
