@@ -291,7 +291,7 @@ async function h() {
                     }
 
                     // 7. 异常流程处理
-                    if (plainText.includes('/bind') || plainText.includes('请先绑定')) {
+                    if (plainText.includes('/bind') || plainText.includes('绑定')) {
                         fail('账号未绑定游戏角色');
                         return;
                     }
