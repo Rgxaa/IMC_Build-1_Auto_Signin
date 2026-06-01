@@ -4,7 +4,7 @@ const m = require('minecraft-protocol'),
     // 服务器连接配置，敏感信息从环境变量读取
     c = {
         username: process.env.USERNAME,      // 玩家名（离线模式）
-        host: 'off.s4.imc.cab',                 // 服务器地址
+        host: 'off.s4.imc.cab',              // 服务器地址
         port: 25565,                         // 端口
         version: '1.8.9',                    // 客户端版本
         protocolVersion: 47,                 // 对应协议号
