@@ -176,7 +176,7 @@ async function h() {
                 info('⏰ 全局超时，强制终止连接');
                 client.end();
                 resolve();
-            }, 15000);
+            }, 40000);
 
             // 流程状态机（移除了 wait_fish 状态，登录后直接监听钓鱼同步）
             let state = 'login';                // login -> wait_switch -> wait_sign
