@@ -4,7 +4,7 @@ const m = require('minecraft-protocol'),
     // 服务器连接配置，敏感信息从环境变量读取
     c = {
         username: process.env.USERNAME,      // 玩家名（离线模式）
-        host: 'off.imc.cab',                 // 服务器地址
+        host: 'off.s4.imc.cab',              // 服务器地址
         port: 25565,                         // 端口
         version: '1.8.9',                    // 客户端版本
         protocolVersion: 47,                 // 对应协议号
@@ -184,7 +184,6 @@ async function h() {
             let woolClicked = false;            // 是否已拾取黄色羊毛
             let bookClicked = false;            // 是否已拾取书
             let loginCount = 0;                 // 登录维度计数（用于区分初次加入与切换维度）
-            let brandReplied = false;           // 是否已回复过 brand 信息
 
             // 统一清理资源
             function cleanup() {
@@ -206,67 +205,8 @@ async function h() {
                 resolve();
             }
 
-            // ══════════════════ 并行监听：数据包处理（含 brand 回复与紫水晶签到窗口） ══════════════════
+            // ══════════════════ 并行监听：紫水晶签到窗口 ══════════════════
             client.on('packet', (data, meta) => {
-                // 调试日志：打印收到的每个数据包名称
-                try {
-                    info(`DEBUG packet: ${meta.name}`);
-                } catch (e) {
-                    // 调试日志异常不影响主流程
-                }
-
-                // 专门记录 kick_disconnect 的踢出原因
-                if (meta.name === 'kick_disconnect') {
-                    try {
-                        const reason = f(p(data.reason));
-                        info(`DEBUG kick_disconnect 原因: ${reason}`);
-                    } catch (e) {
-                        info(`DEBUG kick_disconnect 原始数据: ${JSON.stringify(data)}`);
-                    }
-                }
-
-                // 处理 custom_payload（响应品牌查询与通道注册，防止被误判为网页版）
-                if (meta.name === 'custom_payload') {
-                    try {
-                        const channel = data.channel;
-                        let payloadStr = '';
-                        if (Buffer.isBuffer(data.data)) {
-                            payloadStr = data.data.toString('utf8');
-                            // 若不是可打印字符串，显示十六进制
-                            if (!/^[\x20-\x7E]*$/.test(payloadStr)) {
-                                payloadStr = data.data.toString('hex');
-                            }
-                        } else if (typeof data.data === 'string') {
-                            payloadStr = data.data;
-                        }
-                        info(`DEBUG custom_payload channel=${channel}, data=${payloadStr}`);
-
-                        // 自动回复 minecraft:brand 或 MC|Brand（只回复一次）
-                        if (!brandReplied && (channel === 'minecraft:brand' || channel === 'MC|Brand')) {
-                            brandReplied = true;
-                            const brand = Buffer.from('vanilla', 'utf8');
-                            client.write('custom_payload', {
-                                channel: channel,
-                                data: brand
-                            });
-                            info('已回复 ' + channel + ' (vanilla)');
-                        }
-
-                        // 如果服务器要求注册通道，声明我们支持的通道列表
-                        if (channel === 'minecraft:register') {
-                            const supportedChannels = 'minecraft:brand\0MC|Brand\0';
-                            client.write('custom_payload', {
-                                channel: 'minecraft:register',
-                                data: Buffer.from(supportedChannels, 'utf8')
-                            });
-                            info('已回复 minecraft:register，声明支持 brand 通道');
-                        }
-                    } catch (e) {
-                        info(`DEBUG custom_payload 处理异常: ${e.message}`);
-                    }
-                }
-
-                // 紫水晶签到窗口：open_window
                 if (meta.name === 'open_window') {
                     // 检测到容器打开（minecraft:container 代表普通箱子/界面）
                     if (data.inventoryType === 'minecraft:container') {
